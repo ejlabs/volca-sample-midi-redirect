@@ -19,7 +19,7 @@ void handleNoteOn(byte channel, byte pitch, byte velocity) {
 
   /*
    * receiving midi note from B0(35) to G#1(44) from single midi channel (vPolyChan)
-   * ant send to 1 to 10 MIDI channel to Volca Sample
+   * and send to 1 to 10 MIDI channel to Volca Sample
   */
   
   vNote = MIDI.getData1();
