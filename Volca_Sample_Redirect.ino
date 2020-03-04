@@ -10,6 +10,7 @@
 
 int vPolyChan = 16; // Default Channel to send MIDI to Volca Sample
 int vNote;
+int velocity;
 
 MIDI_CREATE_DEFAULT_INSTANCE();
 
@@ -23,7 +24,10 @@ void handleNoteOn(byte channel, byte pitch, byte velocity) {
   */
   
   vNote = MIDI.getData1();
+  velocity = MIDI.getData2();
+ 
   if (vNote > 34 && vNote < 45 && MIDI.getChannel() == vPolyChan) {
+      MIDI.sendControlChange(7, velocity, vNote - 34); // Volca don't listen velocity, changing level instead
       MIDI.send(MIDI.getType(), vNote, MIDI.getData2(),vNote - 34);
   }
   
@@ -44,6 +48,8 @@ void setup(){
 
     // Do the same for NoteOffs
     MIDI.setHandleNoteOff(handleNoteOff);
+ 
+    MIDI.turnThruOff();
 
     // Initiate MIDI communications, listen to all channels
     MIDI.begin(MIDI_CHANNEL_OMNI);
