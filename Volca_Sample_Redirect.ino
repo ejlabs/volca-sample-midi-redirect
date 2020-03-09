@@ -1,5 +1,5 @@
  /*
- * Volca Sample MIDI Channel Redirect 6/Mar/2020
+ * Volca Sample MIDI Channel Redirect 09/Mar/2020
  * Simple midi channel redirect for Korg Volca Sample
  * Eunjae Im http://ejlabs.net
  */
@@ -23,10 +23,11 @@ void setup(){
     // Do the same for NoteOffs
     MIDI.setHandleNoteOff(handleNoteOff);    
 
-    // Initiate MIDI communications, listen to all channels
-    MIDI.begin(MIDI_CHANNEL_OMNI);
+    // Initiate MIDI communications, listen only VolcaChannel
+    MIDI.begin(VolcaChannel);
 
-    MIDI.turnThruOff(); // Turn Thru Off
+    //MIDI.turnThruOff(); // Turn Thru Off
+    MIDI.setThruFilterMode(midi::Thru::SameChannel); // Set Thru only VolcaChannel
 
 }
 
@@ -56,21 +57,13 @@ void handleNoteOn(byte channel, byte pitch, byte velocity) {
 
 void handleNoteOff(byte channel, byte pitch, byte velocity)
 {
+   /*
+    * Volca don't listen Note off
+    */
    digitalWrite(LED_PIN, LOW); // Turn Off led 
 }
 
 void loop()
 {    
-    if (MIDI.read()) {
-
-      /* filter out all other midi message except below & note on */
-      if (MIDI.getType() == midi::Clock ||
-          MIDI.getType() == midi::Start ||
-          MIDI.getType() == midi::Continue ||
-          MIDI.getType() == midi::Stop)
-          {
-            MIDI.send(MIDI.getType(), MIDI.getData1(), MIDI.getData2(), MIDI.getChannel());
-          }
-     }
-
+  MIDI.read();
 }
